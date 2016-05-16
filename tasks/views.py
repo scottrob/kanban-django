@@ -1,9 +1,18 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics, renderers
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from tasks.models import Cards
 from tasks.serializers import CardsSerializer
+
+
+class Board(generics.ListCreateAPIView):
+    queryset = Cards.objects.all()
+    serializer_class = CardsSerializer
+    renderer_classes = (renderers.TemplateHTMLRenderer,)
+    template_name = 'tasks/index.html'
+
 
 class JSONResponse(HttpResponse):
     """
@@ -17,7 +26,7 @@ class JSONResponse(HttpResponse):
 @csrf_exempt
 def card_list(request):
     """
-    List all code snippets, or create a new snippet.
+    List all cards, or create a new card.
     """
     if request.method == 'GET':
         card = Cards.objects.all()
@@ -35,7 +44,7 @@ def card_list(request):
 @csrf_exempt
 def card_detail(request, pk):
     """
-    Retrieve, update or delete a code snippet.
+    Retrieve, update or delete a card.
     """
     try:
         card = Cards.objects.get(pk=pk)
