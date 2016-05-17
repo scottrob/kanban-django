@@ -1,7 +1,8 @@
 var $card = $('#card');
 var $list = $('#list');
 
-$.get('http://127.0.0.1:8000/tasks/', function(card){
-    var card = card['results']
-
+$.get('/tasks/', function(data){
+    data.forEach(function(task){
+        $('<li>').text(task.title).appendTo($card)
+    })
 })
